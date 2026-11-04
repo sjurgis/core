@@ -417,6 +417,55 @@ class MideaCDWaterHeater(MideaWaterHeater):
 
     _device: MideaCDDevice
 
+    def __init__(
+        self, device: MideaCDDevice, description: MideaWaterHeaterEntityDescription
+    ) -> None:
+        """Midea CD Water Heater entity init."""
+        super().__init__(device, description)
+        self._attr_supported_features |= WaterHeaterEntityFeature.AWAY_MODE
+        if device.preset_modes:
+            self._attr_supported_features |= WaterHeaterEntityFeature.OPERATION_MODE
+
+    @property
+    @override
+    def operation_list(self) -> list[str] | None:
+        """Midea CD Water Heater operation modes."""
+        return list(self._device.preset_modes)
+
+    @property
+    @override
+    def current_operation(self) -> str | None:
+        """Midea CD Water Heater current operation."""
+        if not self._device.get_attribute(CDAttributes.power):
+            return STATE_OFF
+        mode = self._device.get_attribute(CDAttributes.mode)
+        return mode if isinstance(mode, str) else None
+
+    @override
+    async def async_set_operation_mode(self, operation_mode: str) -> None:
+        """Midea CD Water Heater set operation mode."""
+        with midea_api_call():
+            self._device.set_attribute(attr=CDAttributes.mode, value=operation_mode)
+
+    @property
+    @override
+    def is_away_mode_on(self) -> bool | None:
+        """Midea CD Water Heater vacation mode."""
+        value = self._device.get_attribute(CDAttributes.vacation_mode)
+        return value if isinstance(value, bool) else None
+
+    @override
+    async def async_turn_away_mode_on(self) -> None:
+        """Midea CD Water Heater turn vacation mode on."""
+        with midea_api_call():
+            self._device.set_attribute(attr=CDAttributes.vacation_mode, value=True)
+
+    @override
+    async def async_turn_away_mode_off(self) -> None:
+        """Midea CD Water Heater turn vacation mode off."""
+        with midea_api_call():
+            self._device.set_attribute(attr=CDAttributes.vacation_mode, value=False)
+
     @property
     @override
     def min_temp(self) -> float:

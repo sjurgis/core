@@ -50,7 +50,11 @@ def _c2_device() -> DummyDevice:
 def _cd_device() -> DummyDevice:
     return DummyDevice(
         DeviceType.CD,
-        attributes={CDAttributes.vacation_days: 7},
+        attributes={
+            CDAttributes.vacation_days: 7,
+            CDAttributes.disinfection_temperature: 65.0,
+            CDAttributes.disinfection_temperature_upper_limit: 68.0,
+        },
     )
 
 
@@ -175,6 +179,51 @@ async def test_cd_number_static_range(
         [("set_attribute", "vacation_days", 30)],
         device,
     )
+
+
+async def test_cd_disinfection_temperature(
+    hass: HomeAssistant,
+    mock_config_entry: Callable[[DummyDevice], MockConfigEntry],
+) -> None:
+    """Test CD's disinfection temperature follows the reported upper limit."""
+    device = _cd_device()
+    config_entry = mock_config_entry(device)
+    with patch("homeassistant.components.midea._PLATFORMS", [Platform.NUMBER]):
+        await setup_integration(hass, config_entry, device)
+
+    entity_entry = entity_entries(hass, config_entry)[
+        f"{TEST_DEVICE_ID}_disinfection_temperature"
+    ]
+    assert (state := hass.states.get(entity_entry.entity_id)) is not None
+    assert float(state.state) == 65
+    assert state.attributes[ATTR_MIN] == 60
+    assert state.attributes[ATTR_MAX] == 68
+
+    await _assert_service_call(
+        hass,
+        entity_entry.entity_id,
+        62,
+        [("set_attribute", "disinfection_temperature", 62)],
+        device,
+    )
+
+
+async def test_cd_disinfection_temperature_default_max(
+    hass: HomeAssistant,
+    mock_config_entry: Callable[[DummyDevice], MockConfigEntry],
+) -> None:
+    """Test CD's disinfection temperature falls back to the static max."""
+    device = _cd_device()
+    device.attributes[CDAttributes.disinfection_temperature_upper_limit] = None
+    config_entry = mock_config_entry(device)
+    with patch("homeassistant.components.midea._PLATFORMS", [Platform.NUMBER]):
+        await setup_integration(hass, config_entry, device)
+
+    entity_entry = entity_entries(hass, config_entry)[
+        f"{TEST_DEVICE_ID}_disinfection_temperature"
+    ]
+    assert (state := hass.states.get(entity_entry.entity_id)) is not None
+    assert state.attributes[ATTR_MAX] == 70
 
 
 async def test_ed_number_entities(

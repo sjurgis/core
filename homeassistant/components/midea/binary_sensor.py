@@ -154,6 +154,41 @@ BINARY_SENSORS: list[MideaBinarySensorEntityDescription] = [
         entity_category=EntityCategory.DIAGNOSTIC,
         models=[DeviceType.E2],
     ),
+    MideaBinarySensorEntityDescription(
+        key="compressor_status",
+        translation_key="compressor_status",
+        device_class=BinarySensorDeviceClass.RUNNING,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        models=[DeviceType.CD],
+    ),
+    MideaBinarySensorEntityDescription(
+        key="top_elec_heat",
+        translation_key="top_elec_heat",
+        device_class=BinarySensorDeviceClass.RUNNING,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        models=[DeviceType.CD],
+    ),
+    MideaBinarySensorEntityDescription(
+        key="bottom_elec_heat",
+        translation_key="bottom_elec_heat",
+        device_class=BinarySensorDeviceClass.RUNNING,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        models=[DeviceType.CD],
+    ),
+    MideaBinarySensorEntityDescription(
+        key="water_pump",
+        translation_key="water_pump",
+        device_class=BinarySensorDeviceClass.RUNNING,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        models=[DeviceType.CD],
+    ),
+    MideaBinarySensorEntityDescription(
+        key="maintain_warn",
+        translation_key="maintain_warn",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        models=[DeviceType.CD],
+    ),
 ]
 
 

@@ -118,6 +118,12 @@
       "arofene_link": {
         "name": "Methanal"
       },
+      "bottom_elec_heat": {
+        "name": "Bottom electric heater"
+      },
+      "compressor_status": {
+        "name": "Compressor"
+      },
       "door_warn": {
         "name": "Door warning"
       },
@@ -148,6 +154,9 @@
       "led_status": {
         "name": "LED"
       },
+      "maintain_warn": {
+        "name": "Maintenance required"
+      },
       "night_mode": {
         "name": "Night mode"
       },
@@ -171,6 +180,12 @@
       },
       "tank_full": {
         "name": "Tank full"
+      },
+      "top_elec_heat": {
+        "name": "Top electric heater"
+      },
+      "water_pump": {
+        "name": "Water pump"
       },
       "water_pump_running": {
         "name": "Water pump running"
@@ -241,6 +256,9 @@
       }
     },
     "number": {
+      "disinfection_temperature": {
+        "name": "Disinfection temperature"
+      },
       "dry_level": {
         "name": "Dry level"
       },

@@ -118,7 +118,7 @@ SWITCHES: list[MideaSwitchEntityDescription] = [
     MideaSwitchEntityDescription(
         key="disinfect",
         translation_key="disinfect",
-        models=[DeviceType.C3],
+        models=[DeviceType.C3, DeviceType.CD],
         entity_category=EntityCategory.CONFIG,
     ),
     MideaSwitchEntityDescription(

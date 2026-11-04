@@ -6,6 +6,7 @@ from unittest.mock import patch
 from midealocal.const import DeviceType
 from midealocal.devices.ac import DeviceAttributes as ACAttributes
 from midealocal.devices.ca import DeviceAttributes as CAAttributes
+from midealocal.devices.cd import DeviceAttributes as CDAttributes
 from midealocal.devices.dc import DeviceAttributes as DCAttributes
 from midealocal.devices.e1 import DeviceAttributes as E1Attributes
 from midealocal.devices.e2 import DeviceAttributes as E2Attributes
@@ -70,6 +71,19 @@ def _e1_device() -> DummyDevice:
     )
 
 
+def _cd_device() -> DummyDevice:
+    return DummyDevice(
+        DeviceType.CD,
+        attributes={
+            CDAttributes.compressor_status: True,
+            CDAttributes.top_elec_heat: False,
+            CDAttributes.bottom_elec_heat: False,
+            CDAttributes.water_pump: False,
+            CDAttributes.maintain_warn: True,
+        },
+    )
+
+
 def _e2_device() -> DummyDevice:
     return DummyDevice(
         DeviceType.E2,
@@ -111,6 +125,7 @@ def _dc_device() -> DummyDevice:
     [
         pytest.param(_ac_device(), id="ac"),
         pytest.param(_ca_device(), id="ca"),
+        pytest.param(_cd_device(), id="cd"),
         pytest.param(_dc_device(), id="dc"),
         pytest.param(_e1_device(), id="e1"),
         pytest.param(_e2_device(), id="e2"),

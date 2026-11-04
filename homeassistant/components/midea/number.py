@@ -13,13 +13,27 @@ from homeassistant.components.number import (
     NumberEntity,
     NumberEntityDescription,
 )
-from homeassistant.const import EntityCategory, UnitOfMass, UnitOfTime, UnitOfVolume
+from homeassistant.const import (
+    EntityCategory,
+    UnitOfMass,
+    UnitOfTemperature,
+    UnitOfTime,
+    UnitOfVolume,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .entity import MideaConfigEntry, MideaEntity, midea_api_call
 
 PARALLEL_UPDATES = 0
+
+
+def _cd_disinfection_max(device: MideaDevice) -> float | None:
+    """Return the disinfection temperature upper limit reported by a CD device."""
+    value = device.attributes.get("disinfection_temperature_upper_limit")
+    if isinstance(value, (int, float)) and value > 0:
+        return float(value)
+    return None
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -54,6 +68,18 @@ NUMBERS: list[MideaNumberEntityDescription] = [
         native_min_value=0,
         max_value_fn=lambda device: cast(MideaC2Device, device).max_seat_temp_level,
         native_step=1,
+    ),
+    MideaNumberEntityDescription(
+        key="disinfection_temperature",
+        translation_key="disinfection_temperature",
+        models=[DeviceType.CD],
+        device_class=NumberDeviceClass.TEMPERATURE,
+        native_min_value=60,
+        native_max_value=70,
+        max_value_fn=_cd_disinfection_max,
+        native_step=1,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        entity_category=EntityCategory.CONFIG,
     ),
     MideaNumberEntityDescription(
         key="vacation_days",
